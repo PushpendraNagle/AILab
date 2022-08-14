@@ -1,9 +1,10 @@
 from collections import deque
 import numpy as np
-import sys
+import resource, sys
 
-sys.setrecursionlimit(10**3)
-print(sys.getrecursionlimit())
+# Increasing resource limit to avoid exceeding recursion limit
+resource.setrlimit(resource.RLIMIT_STACK, (2**29,-1))
+sys.setrecursionlimit(10**6)
 
 # 0 will represent blank space in the grid
 target_grid = ((1, 2, 3),
@@ -22,12 +23,17 @@ def generate_random_grid():
     return grid
 
 def find_blank_position(grid):
+    # Function to find row and column number of blank cell in the grid
     for i in range(3):
         for j in range(3):
             if grid[i][j] == 0:
                 return i, j
 
 def bfs(grid):
+    # Function to find number of steps required to reach target state of the grid using BFS.
+    # returns -1 if its not possible to reach the target grid
+
+    # Dictionary to store number of steps Key->grid, Value->(number of steps).
     dis = dict()
     q = deque()
     # Adding intital grid to the queue
@@ -40,6 +46,11 @@ def bfs(grid):
         for dx, dy in dir:
             next_x, next_y = x + dx, y + dy
             if next_x>=0 and next_x<3 and next_y>=0 and next_y<3:
+                # tuples are immutable in python therefore we need to 
+                # store grid in list swap the blank space with adjacent
+                # cell and then store it back in tuple.
+                # Tuples are used to store grid state because these are
+                # hashable and can be stored in python set or dictionary
                 grid = [list(item) for item in curr_grid]
                 # Moving blank space to next_x, next_y position
                 grid[x][y], grid[next_x][next_y] = grid[next_x][next_y], grid[x][y]
@@ -52,6 +63,9 @@ def bfs(grid):
     return -1
 
 def dfs(curr_grid, vis=set()):
+    # Function to find number of steps required to reach target state of the grid using DFS.
+    # returns -1 if its not possible to reach the target grid
+    # set "vis" is used to store visited states of grid
     if curr_grid == target_grid:
         return 0
     vis.add(curr_grid)
