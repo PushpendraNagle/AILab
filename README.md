@@ -1,3 +1,5 @@
-AI Lab 1
+Repository for CS561 AI Lab
 
-8 puzzle problem using BFS and DFS
+Pawan Agrawal
+Pushpendra Nagle
+Tanushree
