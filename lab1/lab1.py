@@ -90,15 +90,11 @@ def main():
     print(grid)
     
     bfs_steps = bfs(grid)
-    if bfs_steps == -1:
+    dfs_steps = dfs(grid)
+    if bfs_steps == -1 or dfs_steps == -1:
         print('Solution not possible.')
     else:
         print('Number of steps required to reach the solution using BFS:', bfs_steps)
-
-    dfs_steps = dfs(grid)
-    if dfs_steps == -1:
-        print('Solution not possible.')
-    else:
         print('Number of steps required to reach the solution using DFS:', dfs_steps)
 
 if __name__=='__main__':
