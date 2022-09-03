@@ -88,13 +88,9 @@ def a_star(grid,type):
   closed_list = []
   dist[grid] = 0
   parent[grid] = grid
-  c = 0
   while open_list.qsize() > 0:
     prior, curr_grid = open_list.get()
-    closed_list.append(curr_grid)
     bx, by = find_blank_position(curr_grid)
-    # print(bx,' ',by)
-    # print(prior,' ',curr_grid)
     for dx, dy in dir:
       next_x, next_y = bx + dx, by + dy
       if next_x>=0 and next_x<3 and next_y>=0 and next_y<3:
@@ -104,17 +100,12 @@ def a_star(grid,type):
         # Tuples are used to store grid state because these are
         # hashable and can be stored in python set or dictionary
         grid_t = [list(item) for item in curr_grid]
-        # print(grid_t)
         # Moving blank space to next_x, next_y position
-        # print(bx,' ',by,' ',next_x,' ',next_y)
         grid_t[bx][by], grid_t[next_x][next_y] = grid_t[next_x][next_y], grid_t[bx][by]
         grid_t = tuple(tuple(i) for i in grid_t)
-        # print(curr_grid)
-        # print(grid_t)
 
 
         if grid_t not in closed_list and (grid_t not in dist or dist[grid_t]>dist[curr_grid]+1):
-          # print("hey ",grid_t)
           dist[grid_t] = dist[curr_grid]+1
           parent[grid_t] = curr_grid
           if grid_t == target_grid:
@@ -135,7 +126,7 @@ def a_star(grid,type):
             print(g)
             return
           open_list.put([heuristic(grid_t,type)+dist[grid_t],grid_t])
-
+        closed_list.append(curr_grid)
           
     
   print('Woosh! Failed to reach the target grid')
