@@ -119,11 +119,18 @@ def a_star(grid,type):
             print('Time taken for execution = ', end_time-start_time)
             print('Optimal path cost = ', dist[target_grid])
             g = target_grid
+            path = []
             while g!=grid:
-              print(g)
-              print('||')
+              path.insert(0,g)
               g = parent[g]
-            print(g)
+            path.insert(0,g)
+            for x in path:
+              print(x)
+              if x==target_grid:
+                continue
+              print('                |')
+              print('                |')
+              print('                V')
             return
           open_list.put([heuristic(grid_t,type)+dist[grid_t],grid_t])
         closed_list.append(curr_grid)
@@ -143,9 +150,7 @@ def main():
     # Generate random input
     grid = generate_random_grid()
     print('Randomly generated grid:')
-    print(grid)
-
-    grid = ((3,2,1),(4,6,5),(7,0,8))
+    
     a_star(grid,4)
     a_star(grid,3)
     a_star(grid,2)  
@@ -153,4 +158,3 @@ def main():
     
 if __name__=='__main__':
     main()
-
