@@ -85,7 +85,7 @@ def a_star(grid,type):
   open_list  = PriorityQueue()
   # insert into queue
   open_list.put([heuristic(grid,type), grid])
-  closed_list = []
+  closed_list = set()
   dist[grid] = 0
   parent[grid] = grid
   while open_list.qsize() > 0:
@@ -115,9 +115,10 @@ def a_star(grid,type):
             print(grid)
             print('Goal state')
             print(target_grid)
+            print('Total number of states to optimal path = ',dist[target_grid]+1)
             print('No of states explored = ', len(closed_list))
-            print('Time taken for execution = ', end_time-start_time)
-            print('Optimal path cost = ', dist[target_grid])
+            
+            
             g = target_grid
             path = []
             while g!=grid:
@@ -131,12 +132,14 @@ def a_star(grid,type):
               print('                |')
               print('                |')
               print('                V')
+            print('Optimal path cost = ', dist[target_grid])
+            print('Time taken for execution = ', end_time-start_time)         
             return
           open_list.put([heuristic(grid_t,type)+dist[grid_t],grid_t])
-        closed_list.append(curr_grid)
+        closed_list.add(curr_grid)
           
     
-  print('Woosh! Failed to reach the target grid')
+  print('Woosh! Failed to reach the target grid!')
   end_time = time.time()
   print('Start State:')
   print(grid)
@@ -149,11 +152,16 @@ def a_star(grid,type):
 def main():
     # Generate random input
     grid = generate_random_grid()
-    print('Randomly generated grid:')
     
+    print('Randomly generated grid:')
+    print(grid)
+
     a_star(grid,4)
+    print("\n\n")
     a_star(grid,3)
-    a_star(grid,2)  
+    print("\n\n")
+    a_star(grid,2)
+    print("\n\n")  
     a_star(grid,1)
     
 if __name__=='__main__':
