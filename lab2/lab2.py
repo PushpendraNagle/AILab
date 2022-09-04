@@ -90,6 +90,35 @@ def a_star(grid,type):
   parent[grid] = grid
   while open_list.qsize() > 0:
     prior, curr_grid = open_list.get()
+    print(curr_grid)
+    if curr_grid == target_grid:
+      print("Yayy! Target grid reached!")
+      end_time = time.time()
+      print('Start State:')
+      print(grid)
+      print('Goal state')
+      
+      print(target_grid)
+      print('Total number of states to optimal path = ',dist[target_grid]+1)
+      print('No of states explored = ', len(closed_list))
+      
+      
+      g = target_grid
+      path = []
+      while g!=grid:
+        path.insert(0,g)
+        g = parent[g]
+      path.insert(0,g)
+      for x in path:
+        print(x)
+        if x==target_grid:
+          continue
+        print('                |')
+        print('                |')
+        print('                V')
+      print('Optimal path cost = ', dist[target_grid])
+      print('Time taken for execution = ', end_time-start_time)       
+      return
     bx, by = find_blank_position(curr_grid)
     for dx, dy in dir:
       next_x, next_y = bx + dx, by + dy
@@ -103,43 +132,17 @@ def a_star(grid,type):
         # Moving blank space to next_x, next_y position
         grid_t[bx][by], grid_t[next_x][next_y] = grid_t[next_x][next_y], grid_t[bx][by]
         grid_t = tuple(tuple(i) for i in grid_t)
-
+       
 
         if grid_t not in closed_list and (grid_t not in dist or dist[grid_t]>dist[curr_grid]+1):
           dist[grid_t] = dist[curr_grid]+1
           parent[grid_t] = curr_grid
-          if grid_t == target_grid:
-            print("Yayy! Target grid reached!")
-            end_time = time.time()
-            print('Start State:')
-            print(grid)
-            print('Goal state')
-            print(target_grid)
-            print('Total number of states to optimal path = ',dist[target_grid]+1)
-            print('No of states explored = ', len(closed_list))
-            
-            
-            g = target_grid
-            path = []
-            while g!=grid:
-              path.insert(0,g)
-              g = parent[g]
-            path.insert(0,g)
-            for x in path:
-              print(x)
-              if x==target_grid:
-                continue
-              print('                |')
-              print('                |')
-              print('                V')
-            print('Optimal path cost = ', dist[target_grid])
-            print('Time taken for execution = ', end_time-start_time)         
-            return
           open_list.put([heuristic(grid_t,type)+dist[grid_t],grid_t])
+        
         closed_list.add(curr_grid)
           
     
-  print('Woosh! Failed to reach the target grid!')
+  print('Oops! Failed to reach the target grid!')
   end_time = time.time()
   print('Start State:')
   print(grid)
@@ -155,6 +158,8 @@ def main():
     
     print('Randomly generated grid:')
     print(grid)
+
+    # grid = ((1,2,3),(4,5,6),(0,7,8))
 
     a_star(grid,4)
     print("\n\n")
