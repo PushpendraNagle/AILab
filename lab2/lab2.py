@@ -40,18 +40,19 @@ def find_blank_position(grid):
             if grid[i][j] == 0:
                 return i, j
 
+# fn to calculate heuristics
 def heuristic(grid,type):
-  if type==1:
+  if type==1:                           # h1(n) = 0
     return 0
-  elif type == 2:
+  elif type == 2:                       # h2(n) = count of misplaced tiles from their destined position.
+
     count=0
     for i in range(0,3):
       for j in range(0,3):
         if grid[i][j]!=i*3+j+1:
           count = count +1
-          # print(i," ",j)
     return count
-  elif type == 3:
+  elif type == 3:                       # h3(n) = sum of Manhattan distance of each tiles from the goal position
     dist=0;
     for i in range(0,3):
       for j in range(0,3):
@@ -61,9 +62,8 @@ def heuristic(grid,type):
         ory=(grid[i][j]-1)%3
         d=(abs(i-orx)+abs(j-ory))
         dist+=d
-        # print(d)
     return dist
-  elif type==4:
+  elif type==4:                         # h4(n) = sum of Euclidean distance of each tiles from the goal position
     dist=0;
     for i in range(0,3):
       for j in range(0,3):
@@ -71,37 +71,33 @@ def heuristic(grid,type):
           continue
         orx=(int)((grid[i][j]-1)/3)
         ory=(grid[i][j]-1)%3
-        # print(orx," ",ory)
         d=np.sqrt((i-orx)*(i-orx)+(j-ory)*(j-ory))
         dist+=d
-        # print(d)
     return dist
 
 def a_star(grid,type):
   print('Heuristic ',type)
-  start_time = time.time()
-  dist = dict()
-  parent = dict()
-  open_list  = PriorityQueue()
+  start_time = time.time()        # store start time of execution
+  dist = dict()                   # a dictionary to store the distance of states from start state
+  parent = dict()                 # a dictionary to store the parent of each state
+  open_list  = PriorityQueue()    # open list) for maintaining the states which are found but yet to be explored.
+
   # insert into queue
   open_list.put([heuristic(grid,type), grid])
-  closed_list = set()
+  closed_list = set()             # close list formaintaining the already explored states 
   dist[grid] = 0
   parent[grid] = grid
   while open_list.qsize() > 0:
-    prior, curr_grid = open_list.get()
-    print(curr_grid)
-    if curr_grid == target_grid:
+    prior, curr_grid = open_list.get()  # peek and pop
+    if curr_grid == target_grid:        # if goal state is reached
       print("Yayy! Target grid reached!")
       end_time = time.time()
       print('Start State:')
       print(grid)
-      print('Goal state')
-      
+      print('Goal state')    
       print(target_grid)
       print('Total number of states to optimal path = ',dist[target_grid]+1)
-      print('No of states explored = ', len(closed_list))
-      
+      print('No of states explored = ', len(closed_list))     
       
       g = target_grid
       path = []
@@ -120,7 +116,7 @@ def a_star(grid,type):
       print('Time taken for execution = ', end_time-start_time)       
       return
     bx, by = find_blank_position(curr_grid)
-    for dx, dy in dir:
+    for dx, dy in dir:                    # expand all the possible next states of the current grid
       next_x, next_y = bx + dx, by + dy
       if next_x>=0 and next_x<3 and next_y>=0 and next_y<3:
         # tuples are immutable in python therefore we need to 
@@ -131,15 +127,14 @@ def a_star(grid,type):
         grid_t = [list(item) for item in curr_grid]
         # Moving blank space to next_x, next_y position
         grid_t[bx][by], grid_t[next_x][next_y] = grid_t[next_x][next_y], grid_t[bx][by]
-        grid_t = tuple(tuple(i) for i in grid_t)
-       
+        grid_t = tuple(tuple(i) for i in grid_t)       
 
         if grid_t not in closed_list and (grid_t not in dist or dist[grid_t]>dist[curr_grid]+1):
           dist[grid_t] = dist[curr_grid]+1
           parent[grid_t] = curr_grid
           open_list.put([heuristic(grid_t,type)+dist[grid_t],grid_t])
         
-        closed_list.add(curr_grid)
+        closed_list.add(curr_grid)             # add current grid to closed list
           
     
   print('Oops! Failed to reach the target grid!')
@@ -148,7 +143,7 @@ def a_star(grid,type):
   print(grid)
   print('Goal state')
   print(target_grid)
-  print('No of states explored = ', len(closed_list))
+  print('No of states explored before termination = ', len(closed_list))
   print('Time taken for execution = ', end_time-start_time)
   return -1
 
@@ -158,8 +153,6 @@ def main():
     
     print('Randomly generated grid:')
     print(grid)
-
-    # grid = ((1,2,3),(4,5,6),(0,7,8))
 
     a_star(grid,4)
     print("\n\n")
